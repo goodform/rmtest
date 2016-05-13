@@ -7,7 +7,6 @@ A simple nano-framework for testing redis modules using python unit test, and a 
 ```py
 
 from rmtest import ModuleTestCase
-import unittest
 
 class MyTestCase(ModuleTestCase('../module.so')):
     
