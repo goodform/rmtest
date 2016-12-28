@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 from setuptools import setup, find_packages
 
+
 setup(
     name='rmtest',
-    version='0.1',
-    description='',
-    url='http://github.com/RedisLabas/rmtest',
+    version='0.1.2',
+    description='Redis Module Testing Utility',
+    url='http://github.com/RedisLabs/rmtest',
     packages=find_packages(),
     install_requires=['redis'],
-
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
