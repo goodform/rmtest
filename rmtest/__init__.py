@@ -1,6 +1,8 @@
 import unittest
 from .disposableredis import DisposableRedis
 import os
+import contextlib
+
 
 REDIS_MODULE_PATH_ENVVAR = 'REDIS_MODULE_PATH'
 REDIS_PATH_ENVVAR = 'REDIS_PATH'
@@ -28,5 +30,23 @@ def ModuleTestCase(module_path, redis_path='redis-server', fixed_port=None):
 
         def assertExists(self, r, key):
             self.assertTrue(r.exists(key))
+        
+        @contextlib.contextmanager
+        def assertResponseError(self, msg=None):
+            """
+            Assert that a context block with a redis command triggers a redis error response.
+
+            For Example:
+
+                with self.assertResponseError():
+                    r.execute_command('non_existing_command')
+            """
+            
+            try:
+                yield
+            except ResponseError:
+                pass
+            else:
+                self.fail("Expected redis ResponseError " + (msg or ''))
 
     return _ModuleTestCase
