@@ -2,6 +2,7 @@ import unittest
 from .disposableredis import DisposableRedis
 import os
 import contextlib
+from redis import ResponseError
 
 
 REDIS_MODULE_PATH_ENVVAR = 'REDIS_MODULE_PATH'

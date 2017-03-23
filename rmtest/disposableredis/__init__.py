@@ -89,15 +89,19 @@ class DisposableRedis(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.process.terminate()
         if self.dumped:
-            os.unlink(os.path.join(tempfile.gettempdir(), self.dumpfile))
+            try:
+                os.unlink(os.path.join(tempfile.gettempdir(), self.dumpfile))
+            except OSError:
+                pass
 
     def dump_and_reload(self):
-
+        """
+        Dump the rdb and reload it
+        """
         conn = self.client()
         conn.save()
         self.dumped = True
-        self.process.terminate()
-        self._startProcess()
+        conn.execute_command('DEBUG', 'RELOAD')
         
 
     
