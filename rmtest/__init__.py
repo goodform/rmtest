@@ -53,7 +53,10 @@ class BaseModuleTestCase(unittest.TestCase):
         return self.client.execute_command(*args, **kwargs)
 
     def assertOk(self, x, msg=None):
-        self.assertEqual("OK", x.decode(), msg)
+        if type(x) == type(b""):
+            self.assertEqual(b"OK", x, msg)
+        else:
+            self.assertEqual("OK", x, msg)
 
     def assertCmdOk(self, cmd, *args, **kwargs):
         self.assertOk(self.cmd(cmd, *args, **kwargs))
