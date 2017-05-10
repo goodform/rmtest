@@ -48,7 +48,7 @@ class DisposableRedis(object):
         for k, v in extra_args.items():
             self.extra_args.append('--%s' % k)
             if isinstance(v, (list, tuple)):
-                extra_args += list(v)
+                self.extra_args += list(v)
             else:
                 self.extra_args.append(v)
              
