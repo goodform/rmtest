@@ -4,6 +4,7 @@ import tempfile
 import redis
 import time
 import os
+import sys
 import itertools
 from contextlib import contextmanager
 
@@ -55,13 +56,15 @@ class DisposableRedis(object):
         
         self.path = path
         self.dumped = False
+        self.errored = False
+
 
     def _startProcess(self):
-        
+        #print("Starting redis process: {}".format(' '.join(self.args)))
         self.process = subprocess.Popen(
             self.args,
             stdin=subprocess.PIPE,
-            stdout=open(os.devnull, 'w')
+            stdout=subprocess.PIPE
         )
 
         while True:
@@ -106,12 +109,18 @@ class DisposableRedis(object):
             
     def dump_and_reload(self):
         """
-        Dump the rdb and reload it
+        Dump the rdb and reload it, to test for serialization errors
         """
+
         conn = self.client()
         conn.save()
         self.dumped = True
-        conn.execute_command('DEBUG', 'RELOAD')
+        try:
+            conn.execute_command('DEBUG', 'RELOAD')
+        except redis.RedisError as err:
+            self.errored = True
+            raise err
+
         
 
     
