@@ -72,7 +72,9 @@ class DisposableRedis(object):
                 self.process.poll()
                 if self.process.returncode is not None:
                     raise RuntimeError(
-                        "Process has exited with code {}".format(self.process.returncode))
+                        "Process has exited with code {}\n. Redis output: {}"
+                        .format(self.process.returncode, self.process.stdout.read()))
+                
                 time.sleep(0.1)
 
     def __enter__(self):
@@ -94,12 +96,14 @@ class DisposableRedis(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.process.terminate()
+        if exc_val or self.errored:
+            sys.stderr.write("Redis output: {}\n".format(self.process.stdout.read()))
         if self.dumped:
             try:
                 os.unlink(os.path.join(tempfile.gettempdir(), self.dumpfile))
             except OSError:
                 pass
-
+            
     def dump_and_reload(self):
         """
         Dump the rdb and reload it
