@@ -1,6 +1,5 @@
 import subprocess
 import socket
-import tempfile
 import redis
 import time
 import os
@@ -89,7 +88,6 @@ class DisposableRedis(object):
         self.dumpfile = 'dump.%s.rdb' % self.port
         self.args = [self.path,
                 '--port', str(self.port),
-                '--dir', tempfile.gettempdir(),
                 '--save', '',
                 '--dbfilename', self.dumpfile] + self.extra_args
 
@@ -103,7 +101,7 @@ class DisposableRedis(object):
             sys.stderr.write("Redis output: {}\n".format(self.process.stdout.read()))
         if self.dumped:
             try:
-                os.unlink(os.path.join(tempfile.gettempdir(), self.dumpfile))
+                os.unlink(self.dumpfile)
             except OSError:
                 pass
             
