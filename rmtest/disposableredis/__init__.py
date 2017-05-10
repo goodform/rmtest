@@ -44,9 +44,15 @@ class DisposableRedis(object):
         # this will hold the actual port the redis is listening on. It's equal to `_port` unless `_port` is None
         # in that case `port` is randomly generated
         self.port = None
-        self.extra_args = list(itertools.chain(
-            *(('--%s' % k, v) for k, v in extra_args.items())
-        ))
+        self.extra_args = []
+        for k, v in extra_args.items():
+            self.extra_args.append('--%s' % k)
+            if isinstance(v, (list, tuple)):
+                extra_args += list(v)
+            else:
+                self.extra_args.append(v)
+             
+        
         self.path = path
         self.dumped = False
 
