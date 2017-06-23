@@ -77,7 +77,11 @@ class DisposableRedis(object):
 
                 time.sleep(0.1)
 
-    def __enter__(self):
+    def start(self):
+        """
+        Start the server. To stop the server you should call stop()
+        accordingly
+        """
         if self._port is None:
             self.port = get_random_port()
         else:
@@ -90,18 +94,24 @@ class DisposableRedis(object):
                      '--dbfilename', self.dumpfile] + self.extra_args
 
         self._start_process()
-        return self.client()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def stop(self):
         self.process.terminate()
-        if exc_val or self.errored:
-            sys.stderr.write("Redis output: {}\n".format(
-                self.process.stdout.read()))
         if self.dumped:
             try:
                 os.unlink(self.dumpfile)
             except OSError:
                 pass
+
+    def __enter__(self):
+        self.start()
+        return self.client()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
+        if exc_val or self.errored:
+            sys.stderr.write("Redis output: {}\n".format(
+                self.process.stdout.read()))
 
     def dump_and_reload(self):
         """
