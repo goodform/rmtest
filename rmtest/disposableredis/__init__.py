@@ -8,6 +8,9 @@ import itertools
 from contextlib import contextmanager
 
 
+REDIS_SHOW_OUTPUT = int(os.environ.get('REDIS_VERBOSE', 0))
+
+
 def get_random_port():
     sock = socket.socket()
     sock.listen(0)
@@ -56,12 +59,17 @@ class DisposableRedis(object):
         self.dumped = False
         self.errored = False
 
+    def _get_output(self):
+        return '' if REDIS_SHOW_OUTPUT else self.process.stdout.read()
+
     def _start_process(self):
         #print("Starting redis process: {}".format(' '.join(self.args)))
+        stdout = None if REDIS_SHOW_OUTPUT else subprocess.PIPE
         self.process = subprocess.Popen(
             self.args,
             stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE
+            stdout=stdout
+            # stdout=subprocess.PIPE
         )
 
         while True:
@@ -73,7 +81,7 @@ class DisposableRedis(object):
                 if self.process.returncode is not None:
                     raise RuntimeError(
                         "Process has exited with code {}\n. Redis output: {}"
-                        .format(self.process.returncode, self.process.stdout.read()))
+                        .format(self.process.returncode, self._get_output()))
 
                 time.sleep(0.1)
 
@@ -110,8 +118,7 @@ class DisposableRedis(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.stop()
         if exc_val or self.errored:
-            sys.stderr.write("Redis output: {}\n".format(
-                self.process.stdout.read()))
+            sys.stderr.write("Redis output: {}\n".format(self._get_output()))
 
     def dump_and_reload(self):
         """
