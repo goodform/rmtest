@@ -24,13 +24,20 @@ class TestTestCase(ModuleTestCase(MODULE_PATH, module_args=('foo','bar'))):
         if not os.path.exists(MODULE_PATH):
             build_module()
 
-    def testMe(self):
+    def testContext(self):
         with self.redis() as r:
             with self.redis() as r:
                 for _ in r.retry_with_rdb_reload():
                     self.assertOk(r.execute_command('TEST.TEST'))
                     with self.assertResponseError():
                         r.execute_command('TEST.ERR')
+
+    def testBasic(self):
+        self.assertTrue(self.server)
+        self.assertTrue(self.client)
+        with self.assertResponseError():
+            self.cmd('TEST.ERR')
+
 
 if __name__ == '__main__':
     unittest.main()

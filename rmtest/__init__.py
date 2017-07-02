@@ -11,14 +11,37 @@ REDIS_PORT_ENVVAR = 'REDIS_PORT'
 
 
 class BaseModuleTestCase(unittest.TestCase):
+    def setUp(self):
+        super(BaseModuleTestCase, self).setUp()
+        self.server = self.redis()
+        self.server.start()
+        self.client = self.server.client()
+        self.client.flushdb()
+
+    def tearDown(self):
+        self.server.stop()
+        self.server = None
+        self.client = None
+        super(BaseModuleTestCase, self).tearDown()
+
     def redis(self):
         raise NotImplementedError()
+
+    def cmd(self, *args, **kwargs):
+        return self.client.execute_command(*args, **kwargs)
 
     def assertOk(self, x):
         self.assertEquals("OK", x)
 
+    def assertCmdOk(self, cmd, *args, **kwargs):
+        self.assertOk(self.cmd(cmd, *args, **kwargs))
+
     def assertExists(self, r, key):
         self.assertTrue(r.exists(key))
+
+    def retry_with_reload(self):
+        return self.client.retry_with_rdb_reload()
+
 
     @contextlib.contextmanager
     def assertResponseError(self, msg=None):
