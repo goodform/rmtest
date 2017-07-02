@@ -11,18 +11,31 @@ REDIS_PORT_ENVVAR = 'REDIS_PORT'
 
 
 class BaseModuleTestCase(unittest.TestCase):
-    def setUp(self):
-        super(BaseModuleTestCase, self).setUp()
-        self.server = self.redis()
-        self.server.start()
-        self.client = self.server.client()
-        self.client.flushdb()
-
     def tearDown(self):
-        self.server.stop()
-        self.server = None
-        self.client = None
+        if hasattr(self, '_server'):
+            self._server.stop()
+            self._server = None
+            self._client = None
+
         super(BaseModuleTestCase, self).tearDown()
+
+    @property
+    def server(self):
+        self._ensure_server()
+        return self._server
+
+    @property
+    def client(self):
+        self._ensure_server()
+        return self._client
+
+    def _ensure_server(self):
+        if getattr(self, '_server', None):
+            return
+        self._server = self.redis()
+        self._server.start()
+        self._client = self._server.client()
+        self._client.flushdb()
 
     def redis(self):
         raise NotImplementedError()
