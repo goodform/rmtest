@@ -12,9 +12,7 @@ from rmtest import ModuleTestCase
 class MyTestCase(ModuleTestCase('../module.so', module_args = ('foo', 'bar'))):
             
     def testCmd(self):
-        with self.redis() as r:
-          
-            self.assertOk(r.execute_command('mymodule.dosomething', 'foo', 'bar'))
+        self.assertOk(self.cmd('mymodule.dosomething', 'foo', 'bar'))
 
 if __name__ == '__main__':
     unittest.main()               
@@ -38,6 +36,12 @@ Controls the path to redis-server. By default we assume it's in `$PATH`
 Causes the tests to run against a fixed redis port instead of spawning ephemeral disposable redis instances for each test. 
 
 This is useful for debugging failures with `redis-cli MONITOR`.
+
+## REDIS_DEBUGGER
+
+Causes the tests to be run under a debugger (e.g. `valgrind`). The value to this
+environment variable is the path to the debugger. Does not work if there are spaces
+in the path.
 
 
 ## Installing from pypi
