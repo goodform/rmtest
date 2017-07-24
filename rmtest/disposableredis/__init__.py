@@ -8,8 +8,8 @@ import itertools
 from contextlib import contextmanager
 
 
-REDIS_SHOW_OUTPUT = int(os.environ.get('REDIS_VERBOSE', 0))
 REDIS_DEBUGGER = os.environ.get('REDIS_DEBUGGER', None)
+REDIS_SHOW_OUTPUT = int(os.environ.get('REDIS_VERBOSE', 1 if REDIS_DEBUGGER else 0))
 
 
 def get_random_port():
@@ -74,7 +74,8 @@ class DisposableRedis(object):
         self.process = subprocess.Popen(
             args,
             stdin=sys.stdin,
-            stdout=stdout
+            stdout=stdout,
+            stderr=sys.stderr
         )
 
         while True:
