@@ -29,15 +29,20 @@ class BaseModuleTestCase(unittest.TestCase):
         self._ensure_server()
         return self._client
 
-    def _ensure_server(self):
+    def spawn_server(self, **extra_args):
+        if hasattr(self, '_server'):
+            raise Exception('Server already spawned!')
+        self._ensure_server(**extra_args)
+
+    def _ensure_server(self, **args):
         if getattr(self, '_server', None):
             return
-        self._server = self.redis()
+        self._server = self.redis(**args)
         self._server.start()
         self._client = self._server.client()
         self._client.flushdb()
 
-    def redis(self):
+    def redis(self, *args, **kwargs):
         raise NotImplementedError()
 
     def cmd(self, *args, **kwargs):
@@ -98,9 +103,9 @@ def ModuleTestCase(module_path, redis_path='redis-server', fixed_port=None, redi
         
         _redis_path = redis_path
 
-        def redis(self, port=None):
+        def redis(self, port=None, **kwargs):
             if fixed_port is not None:
                 port = fixed_port
-            return DisposableRedis(port=port, path=self._redis_path, loadmodule=self._loadmodule_args)
+            return DisposableRedis(port=port, path=self._redis_path, loadmodule=self._loadmodule_args, **kwargs)
 
     return _ModuleTestCase
