@@ -34,6 +34,10 @@ class BaseModuleTestCase(unittest.TestCase):
             raise Exception('Server already spawned!')
         self._ensure_server(**extra_args)
 
+    def restart_and_reload(self):
+        self._server.dump_and_reload(restart_process=True)
+        self._client = self._server.client()
+
     def _ensure_server(self, **args):
         if getattr(self, '_server', None):
             return
