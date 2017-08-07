@@ -47,6 +47,7 @@ class DisposableRedis(object):
         # It's equal to `_port` unless `_port` is None
         # in that case `port` is randomly generated
         self.port = None
+        self._is_external = True if port else False
         self.use_aof = extra_args.pop('use_aof', False)
         self.extra_args = []
         for k, v in extra_args.items():
@@ -66,6 +67,9 @@ class DisposableRedis(object):
         return '' if REDIS_SHOW_OUTPUT else self.process.stdout.read()
 
     def _start_process(self):
+        if self._is_external:
+            return
+
         if REDIS_DEBUGGER:
             debugger = REDIS_DEBUGGER.split()
             args = debugger + self.args
@@ -127,6 +131,9 @@ class DisposableRedis(object):
                 pass
 
     def stop(self, for_restart=False):
+        if self._is_external:
+            return
+
         self.process.terminate()
         if not for_restart:
             self._cleanup_files()
@@ -157,6 +164,8 @@ class DisposableRedis(object):
         conn = self.client()
 
         if restart_process:
+            if self._is_external:
+                raise Exception('Tied to an external process - cannot restart')
             import time
             conn.bgrewriteaof()
             self._wait_for_child()
