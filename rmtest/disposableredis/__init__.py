@@ -86,16 +86,20 @@ class DisposableRedis(object):
             stderr=sys.stderr,
         )
 
+        begin = time.time()
         while True:
             try:
                 self.client().ping()
                 break
-            except redis.ConnectionError:
+            except (redis.ConnectionError, redis.ResponseError):
                 self.process.poll()
                 if self.process.returncode is not None:
                     raise RuntimeError(
                         "Process has exited with code {}\n. Redis output: {}"
                         .format(self.process.returncode, self._get_output()))
+
+                if time.time() - begin > 300:
+                    raise RuntimeError('Cannot initialize client (waited 5mins)')
 
                 time.sleep(0.1)
 
