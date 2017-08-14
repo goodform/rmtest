@@ -5,6 +5,7 @@ import time
 import os
 import os.path
 import sys
+import warnings
 
 
 REDIS_DEBUGGER = os.environ.get('REDIS_DEBUGGER', None)
@@ -165,7 +166,8 @@ class DisposableRedis(object):
 
         if restart_process:
             if self._is_external:
-                raise Exception('Tied to an external process - cannot restart')
+                warnings.warn('Tied to an external process. Cannot restart')
+                return
             import time
             conn.bgrewriteaof()
             self._wait_for_child()
