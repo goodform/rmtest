@@ -63,8 +63,11 @@ class DisposableRedis(object):
         self.dumpfile = None
         self.aoffile = None
         self.pollfile = None
+        self.process = None
 
     def _get_output(self):
+        if not self.process:
+            return ''
         return '' if REDIS_SHOW_OUTPUT else self.process.stdout.read()
 
     def _start_process(self):
