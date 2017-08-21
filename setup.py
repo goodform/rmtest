@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='rmtest',
-    version='0.5.1',
+    version='0.5.2',
 
     description='Redis Module Testing Utility',
     url='http://github.com/RedisLabs/rmtest',
