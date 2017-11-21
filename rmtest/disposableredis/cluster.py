@@ -87,7 +87,7 @@ class Cluster(object):
             conf['cluster-config-file'] = nodeconf
             self.confs.append(nodeconf)
             
-            print conf
+            
             node = DisposableRedis(path=self.redis_path, **conf)
             node.force_start()
             node.start()

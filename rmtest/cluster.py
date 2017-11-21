@@ -82,7 +82,10 @@ def ClusterModuleTestCase(module_path, num_nodes=3, redis_path='redis-server', f
             Send DEBUG RELOAD to all nodes and test the result
             """
             yield 1
-            self._cluster.broadcast('DEBUG', 'RELOAD')
+            if self._cluster:
+                self._cluster.broadcast('DEBUG', 'RELOAD')
+            else:
+                self._client.execute_command('DEBUG', 'RELOAD')
             yield 2
 
 
