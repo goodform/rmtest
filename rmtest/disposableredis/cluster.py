@@ -58,15 +58,18 @@ class Cluster(object):
     def _wait_cluster(self, timeout_sec):
 
         st = time.time()
-        ok = False
-        conn = self.nodes[0].client()
+        ok = 0
+        
         while st + timeout_sec > time.time():
-
-            status = conn.cluster('INFO')
-            if status.get('cluster_state') == 'ok':
-                print("Cluster state ok, we can start!")
+            ok = 0
+            for node in self.nodes:
+                status = node.client().cluster('INFO')
+                if status.get('cluster_state') == 'ok':
+                    ok += 1
+            if ok == len(self.nodes):
+                print "All nodes OK!"
                 return
-                
+
             time.sleep(0.1)
         raise RuntimeError("Cluster OK wait loop timed out after %s seconds" % timeout_sec)
 
