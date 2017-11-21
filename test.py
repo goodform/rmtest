@@ -1,8 +1,10 @@
 from subprocess import Popen
 import unittest
 import os.path
-
+import time
 from rmtest import ModuleTestCase
+from rmtest.cluster import ClusterModuleTestCase
+from rmtest.disposableredis import cluster
 
 
 MODULE_PATH = os.path.abspath(os.path.dirname(__file__)) + '/' + 'module.so'
@@ -38,6 +40,38 @@ class TestTestCase(ModuleTestCase(MODULE_PATH, module_args=('foo','bar'))):
         with self.assertResponseError():
             self.cmd('TEST.ERR')
 
+class ClusterTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.cl = cluster.Cluster(num_nodes= 3)
+    def testCluster(self):
+        
+        
+        ports = self.cl.start()
+
+        self.assertEqual(3, len(ports))
+
+        res = self.cl.broadcast('ping')
+        self.assertListEqual(['PONG', 'PONG', 'PONG'], res)
+    
+    def tearDown(self):
+        self.cl.stop()
+        
+class ClusterTestCaseWithModule(ClusterModuleTestCase(MODULE_PATH, module_args=('foo','bar'))):
+
+    def testCluster(self):
+
+        client = self.client()
+        self.assertIsNotNone(client)
+
+        for _ in self.retry_with_rdb_reload():
+            self.assertOk(client.execute_command('TEST.TEST'))
+            self.assertOk(self.cmd('TEST.TEST'))
+
+            node = self.client_for_key("foobar")
+            self.assertIsNotNone(node)
+            with self.assertResponseError():
+                client.execute_command('TEST.ERR')
 
 if __name__ == '__main__':
     unittest.main()
