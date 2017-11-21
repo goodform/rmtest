@@ -32,7 +32,7 @@ def ClusterModuleTestCase(module_path, num_nodes=3, redis_path='redis-server', f
         def setUpClass(cls):
             if fixed_port:
                 cls._cluster = None
-                cls._client = Redis(port=fixed_port, connection_pool=ConnectionPool())
+                cls._client = Redis(port=fixed_port, connection_pool=ConnectionPool(port=fixed_port))
             else:
                 cls._cluster = Cluster(num_nodes, path=redis_path, loadmodule=loadmodule_args)
                 cls._ports = cls._cluster.start()
