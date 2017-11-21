@@ -99,7 +99,7 @@ class Cluster(object):
         self._start_nodes()
         self._setup_cluster()
 
-        self._wait_cluster(1000)
+        self._wait_cluster(10)
 
         return self.ports
 
