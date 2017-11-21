@@ -57,7 +57,7 @@ class ClusterTestCase(unittest.TestCase):
     def tearDown(self):
         self.cl.stop()
         
-class ClusterTestCaseWithModule(ClusterModuleTestCase(MODULE_PATH, module_args=('foo','bar'))):
+class ClusterTestCaseWithModule(ClusterModuleTestCase(MODULE_PATH, num_nodes=5, module_args=('foo','bar'))):
 
     def testCluster(self):
 

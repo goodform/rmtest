@@ -21,11 +21,13 @@ class Cluster(object):
 
     def _node_by_slot(self, slot):
 
-        slots_per_node = int(16384 / len(self.ports))
+        slots_per_node = int(16384 / len(self.ports)) + 1
         for i, node in enumerate(self.nodes):
             
             start_slot = i*slots_per_node
             end_slot = start_slot + slots_per_node - 1
+            if end_slot > 16383:
+                end_slot = 16383
             if start_slot <= slot <= end_slot:
                 return node
         
@@ -38,7 +40,7 @@ class Cluster(object):
             conn = node.client()
             conn.cluster('RESET')
 
-        slots_per_node = int(16384 / len(self.ports))
+        slots_per_node = int(16384 / len(self.ports)) + 1
         for i, node in enumerate(self.nodes):
             assert isinstance(node, DisposableRedis)
             conn = node.client()
@@ -47,8 +49,9 @@ class Cluster(object):
 
             start_slot = i*slots_per_node
             end_slot = start_slot + slots_per_node
-            if end_slot == 16383:
-                end_slot+=1
+            if end_slot > 16384:
+                end_slot = 16384
+
             conn.cluster('ADDSLOTS', *(str(x) for x in range(start_slot,end_slot)))
             
     
