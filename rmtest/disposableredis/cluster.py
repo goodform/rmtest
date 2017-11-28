@@ -67,7 +67,7 @@ class Cluster(object):
                 if status.get('cluster_state') == 'ok':
                     ok += 1
             if ok == len(self.nodes):
-                print "All nodes OK!"
+                print("All nodes OK!")
                 return
 
             time.sleep(0.1)
