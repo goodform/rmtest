@@ -9,14 +9,14 @@ import warnings
 import random
 
 REDIS_DEBUGGER = os.environ.get('REDIS_DEBUGGER', None)
-REDIS_SHOW_OUTPUT = int(os.environ.get('REDIS_VERBOSE', 1 if REDIS_DEBUGGER else 0))
+REDIS_SHOW_OUTPUT = int(os.environ.get(
+    'REDIS_VERBOSE', 1 if REDIS_DEBUGGER else 0))
 
 
 def get_random_port():
-    
-    
+
     while True:
-        port = random.randrange(1000, 10000)
+        port = random.randrange(1025, 10000)
         sock = socket.socket()
         try:
             sock.listen(port)
@@ -28,6 +28,7 @@ def get_random_port():
 
 
 class Client(redis.StrictRedis):
+
     def __init__(self, disposable_redis, port):
         redis.StrictRedis.__init__(self, port=port)
         self.dr = disposable_redis
@@ -73,6 +74,7 @@ class DisposableRedis(object):
 
     def force_start(self):
         self._is_external = False
+
     def _get_output(self):
         if not self.process:
             return ''
@@ -110,7 +112,8 @@ class DisposableRedis(object):
                         .format(self.process.returncode, self._get_output()))
 
                 if time.time() - begin > 300:
-                    raise RuntimeError('Cannot initialize client (waited 5mins)')
+                    raise RuntimeError(
+                        'Cannot initialize client (waited 5mins)')
 
                 time.sleep(0.1)
 
@@ -134,10 +137,11 @@ class DisposableRedis(object):
                      '--save', '',
                      '--dbfilename', self.dumpfile]
         if self.use_aof:
-            self.args += ['--appendonly', 'yes', '--appendfilename', self.aoffile]
+            self.args += ['--appendonly', 'yes',
+                          '--appendfilename', self.aoffile]
 
         self.args += self.extra_args
-        
+
         self._start_process()
 
     def _cleanup_files(self):

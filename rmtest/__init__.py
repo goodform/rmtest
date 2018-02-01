@@ -11,6 +11,7 @@ REDIS_PORT_ENVVAR = 'REDIS_PORT'
 
 
 class BaseModuleTestCase(unittest.TestCase):
+
     def tearDown(self):
         if hasattr(self, '_server'):
             self._server.stop()
@@ -64,7 +65,6 @@ class BaseModuleTestCase(unittest.TestCase):
     def retry_with_reload(self):
         return self.client.retry_with_rdb_reload()
 
-
     @contextlib.contextmanager
     def assertResponseError(self, msg=None):
         """
@@ -98,13 +98,14 @@ def ModuleTestCase(module_path, redis_path='redis-server', fixed_port=None, redi
     fixed_port = os.getenv(REDIS_PORT_ENVVAR, fixed_port)
 
     # If we have module args, create a list of arguments
-    loadmodule_args = module_path if not module_args else [module_path] + list(module_args)
-    
+    loadmodule_args = module_path if not module_args else [
+        module_path] + list(module_args)
+
     class _ModuleTestCase(BaseModuleTestCase):
 
         _module_path = os.path.abspath(os.path.join(os.getcwd(), module_path))
         _loadmodule_args = loadmodule_args
-        
+
         _redis_path = redis_path
 
         def redis(self, port=None, **kwargs):
