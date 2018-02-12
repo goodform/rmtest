@@ -45,7 +45,6 @@ class BaseModuleTestCase(unittest.TestCase):
         self._server = self.redis(**args)
         self._server.start()
         self._client = self._server.client()
-        self._client.flushdb()
 
     def redis(self, *args, **kwargs):
         raise NotImplementedError()
