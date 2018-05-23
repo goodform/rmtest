@@ -52,14 +52,20 @@ class BaseModuleTestCase(unittest.TestCase):
     def cmd(self, *args, **kwargs):
         return self.client.execute_command(*args, **kwargs)
 
-    def assertOk(self, x):
-        self.assertEquals("OK", x)
+    def assertOk(self, x, msg=None):
+        if type(x) == type(b""):
+            self.assertEqual(b"OK", x, msg)
+        else:
+            self.assertEqual("OK", x, msg)
 
     def assertCmdOk(self, cmd, *args, **kwargs):
         self.assertOk(self.cmd(cmd, *args, **kwargs))
 
-    def assertExists(self, r, key):
-        self.assertTrue(r.exists(key))
+    def assertExists(self, r, key, msg=None):
+        self.assertTrue(r.exists(key), msg)
+
+    def assertNotExists(self, r, key, msg=None):
+        self.assertFalse(r.exists(key), msg)
 
     def retry_with_reload(self):
         return self.client.retry_with_rdb_reload()

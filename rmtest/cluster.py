@@ -62,19 +62,26 @@ def ClusterModuleTestCase(module_path, num_nodes=3, redis_path='redis-server', f
 
         def cmd(self, *args, **kwargs):
             """
-            Execute a non-shareded command withuot selecting the right client
+            Execute a non-sharded command without selecting the right client
             """
             return self._client.execute_command(*args, **kwargs)
 
-        def assertOk(self, x):
-            self.assertEquals("OK", x)
+        def assertOk(self, x, msg=None):
+            if type(x) == type(b""):
+                self.assertEquals(b"OK", x, msg)
+            else:
+                self.assertEquals("OK", x, msg)
 
         def assertCmdOk(self, cmd, *args, **kwargs):
             self.assertOk(self.cmd(cmd, *args, **kwargs))
 
-        def assertExists(self, key):
+        def assertExists(self, key, msg=None):
             conn = self.client_for_key(key)
-            self.assertTrue(conn.exists(key))
+            self.assertTrue(conn.exists(key), msg)
+
+        def assertNotExists(self, key, msg=None):
+            conn = self.client_for_key(key)
+            self.assertFalse(conn.exists(key), msg)
 
 
         def retry_with_rdb_reload(self):
