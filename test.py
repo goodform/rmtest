@@ -40,13 +40,19 @@ class TestTestCase(ModuleTestCase(MODULE_PATH, module_args=('foo','bar'))):
         with self.assertResponseError():
             self.cmd('TEST.ERR')
 
+
 class ClusterTestCase(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(ClusterTestCase, cls).setUpClass()
+        # Check for the presence of the module
+        if not os.path.exists(MODULE_PATH):
+            build_module()
 
     def setUp(self):
-        self.cl = cluster.Cluster(num_nodes= 3)
+        self.cl = cluster.Cluster(num_nodes=3)
+
     def testCluster(self):
-        
-        
         ports = self.cl.start()
 
         self.assertEqual(3, len(ports))
