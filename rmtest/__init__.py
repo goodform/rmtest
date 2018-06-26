@@ -83,7 +83,7 @@ class BaseModuleTestCase(unittest.TestCase):
         redis_args.update(self.server_args)
         redis_args.update(
             {'loadmodule': [config.REDIS_MODULE] + self.module_args})
-        return DisposableRedis(path=config.REDIS_BINARY, **redis_args)
+        return DisposableRedis(port=config.REDIS_PORT, path=config.REDIS_BINARY, **redis_args)
 
     def cmd(self, *args, **kwargs):
         return self.client.execute_command(*args, **kwargs)
