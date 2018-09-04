@@ -68,9 +68,9 @@ def ClusterModuleTestCase(module_path, num_nodes=3, redis_path='redis-server', f
 
         def assertOk(self, x, msg=None):
             if type(x) == type(b""):
-                self.assertEquals(b"OK", x, msg)
+                self.assertEqual(b"OK", x, msg)
             else:
-                self.assertEquals("OK", x, msg)
+                self.assertEqual("OK", x, msg)
 
         def assertCmdOk(self, cmd, *args, **kwargs):
             self.assertOk(self.cmd(cmd, *args, **kwargs))
