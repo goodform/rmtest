@@ -77,8 +77,8 @@ class Cluster(object):
         
     def _start_nodes(self):
         
-        # Assigne a random "session id"
-        uid = uuid.uuid4().get_hex()
+        # Assign a random "session id"
+        uid = uuid.uuid4().hex
         self.confs = []
         for i in range(self.num_nodes):
 
