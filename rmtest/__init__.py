@@ -3,8 +3,8 @@ import os
 import contextlib
 from redis import ResponseError
 
-from .disposableredis import DisposableRedis
-from . import config
+from rmtest.disposableredis import DisposableRedis
+from rmtest import config
 
 REDIS_MODULE_PATH_ENVVAR = 'REDIS_MODULE_PATH'
 REDIS_PATH_ENVVAR = 'REDIS_PATH'

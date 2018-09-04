@@ -30,7 +30,7 @@ def get_random_port():
 class Client(redis.StrictRedis):
 
     def __init__(self, disposable_redis, port):
-        redis.StrictRedis.__init__(self, port=port)
+        redis.StrictRedis.__init__(self, port=port, decode_responses=True)
         self.dr = disposable_redis
 
     def retry_with_rdb_reload(self):
