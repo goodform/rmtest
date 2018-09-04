@@ -156,6 +156,7 @@ class DisposableRedis(object):
             return
 
         self.process.terminate()
+        self.process.wait()
         if not for_restart:
             self._cleanup_files()
 

@@ -14,6 +14,7 @@ def build_module():
     csrc = MODULE_PATH[0:-3] + '.c'
     po = Popen(['cc', '-o', MODULE_PATH, '-shared', '-fPIC', csrc])
     po.communicate()
+    po.wait()
     if po.returncode != 0:
         raise Exception('Failed to compile module')
 

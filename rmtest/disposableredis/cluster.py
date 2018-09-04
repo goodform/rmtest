@@ -15,9 +15,17 @@ class Cluster(object):
         self.num_nodes = num_nodes
         self.nodes = []
         self.ports = []
+        self.confs = []
         self.redis_path = path
         self.extra_args = extra_args
 
+    def __del__(self):
+
+        for i, node in enumerate(self.nodes):
+            try:
+                os.unlink(self.confs[i])
+            except:
+                pass
 
     def _node_by_slot(self, slot):
 
@@ -34,7 +42,6 @@ class Cluster(object):
         return None
 
     def _setup_cluster(self):
-        
         
         for i, node in enumerate(self.nodes):
             conn = node.client()
@@ -79,7 +86,6 @@ class Cluster(object):
         
         # Assign a random "session id"
         uid = uuid.uuid4().hex
-        self.confs = []
         for i in range(self.num_nodes):
 
             conf = self.common_conf.copy()
@@ -125,7 +131,10 @@ class Cluster(object):
                 node.stop()
             except Error as err:
                 log.error("Error stopping node: %s" % err)
-            os.unlink(self.confs[i])
+            try:
+                os.unlink(self.confs[i])
+            except:
+                pass
 
     def client_for_key(self, key):
         
