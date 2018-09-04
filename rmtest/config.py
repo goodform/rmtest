@@ -1,5 +1,8 @@
 import os
-from ConfigParser import ConfigParser, NoOptionError, NoSectionError
+try:
+    from configparser import ConfigParser, NoOptionError, NoSectionError
+except ImportError:
+    from ConfigParser import ConfigParser, NoOptionError, NoSectionError
 
 """
 Configuration file for determining port, path, etc. of Redis. This is used
