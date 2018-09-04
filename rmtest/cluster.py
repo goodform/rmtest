@@ -1,6 +1,6 @@
 import unittest
-from disposableredis.cluster import Cluster
-from disposableredis import Client
+from .disposableredis.cluster import Cluster
+from .disposableredis import Client
 from redis import Redis, ConnectionPool, ResponseError
 import os
 import contextlib
