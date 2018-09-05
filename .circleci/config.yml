@@ -9,16 +9,22 @@ jobs:
     steps:
       - checkout
 
-#      - run:
-#          name: run check
-#          command: |
-#            find rmtest -name \*.py | \
-#            while read file; do echo $file; pylint3 $file; done
+      - run:
+          name: get tools
+          command: |
+            apt-get update
+            apt-get install python3 pylint3
+
+      - run:
+          name: run check
+          command: |
+            find rmtest -name \*.py | \
+            while read file; do echo $file; pylint3 $file; done
 
       - run:
           name: run build
-          command: python setup.py build
+          command: python3 setup.py build
 
       - run:
           name: run tests
-          command: python setup.py test
+          command: python3 setup.py test
