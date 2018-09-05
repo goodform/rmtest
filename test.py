@@ -1,7 +1,6 @@
 from subprocess import Popen
 import unittest
 import os.path
-import time
 from rmtest import ModuleTestCase
 from rmtest.cluster import ClusterModuleTestCase
 from rmtest.disposableredis import cluster

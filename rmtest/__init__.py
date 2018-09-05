@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring, invalid-name, duplicate-code
+
 import unittest
 import os
 import contextlib
@@ -18,6 +20,9 @@ class BaseModuleTestCase(unittest.TestCase):
     config.py file), or via the rmtest.config file in the current directoy (i.e.
     of the process, not the file), or via environment variables.
     """
+    _server = None
+    _client = None
+
     def tearDown(self):
         if hasattr(self, '_server'):
             self._server.stop()
@@ -88,11 +93,11 @@ class BaseModuleTestCase(unittest.TestCase):
     def cmd(self, *args, **kwargs):
         return self.client.execute_command(*args, **kwargs)
 
-    def assertOk(self, x, msg=None):
-        if type(x) == type(b""):
-            self.assertEqual(b"OK", x, msg)
+    def assertOk(self, oks, msg=None):
+        if isinstance(oks, (bytes, bytearray)):
+            self.assertEqual(b"OK", oks, msg)
         else:
-            self.assertEqual("OK", x, msg)
+            self.assertEqual("OK", oks, msg)
 
     def assertCmdOk(self, cmd, *args, **kwargs):
         self.assertOk(self.cmd(cmd, *args, **kwargs))
