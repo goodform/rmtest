@@ -1,4 +1,4 @@
-# pylint: disable=missing-docstring, invalid-name, duplicate-code
+# pylint: disable=missing-docstring, invalid-name, duplicate-code, attribute-defined-outside-init
 
 import unittest
 import os
@@ -20,8 +20,6 @@ class BaseModuleTestCase(unittest.TestCase):
     config.py file), or via the rmtest.config file in the current directoy (i.e.
     of the process, not the file), or via environment variables.
     """
-    _server = None
-    _client = None
 
     def tearDown(self):
         if hasattr(self, '_server'):
