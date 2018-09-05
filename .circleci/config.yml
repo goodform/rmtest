@@ -8,10 +8,12 @@ jobs:
 
     steps:
       - checkout
+
       - run:
-        command: |
-           sudo apt-get update
-           sudo apt-get install python3 pylint3 pip3
+          name: update python toolchain
+          command: |
+            sudo apt-get update
+            sudo apt-get install python3 pylint3 pip3
 
       # Download and cache dependencies (use latest python modules)
       - restore_cache:
