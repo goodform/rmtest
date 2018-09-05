@@ -22,14 +22,6 @@ class Cluster(object):
         self.redis_path = path
         self.extra_args = extra_args
 
-    def __del__(self):
-
-        for i, _ in enumerate(self.nodes):
-            try:
-                os.unlink(self.confs[i])
-            except OSError:
-                pass
-
     def _node_by_slot(self, slot):
 
         slots_per_node = int(16384 / len(self.ports)) + 1

@@ -25,6 +25,8 @@ jobs:
           name: run build
           command: python3 setup.py build
 
-      - run:
-          name: run tests
-          command: python3 setup.py test
+#      Currently we cannot run tests because we do not have a version of
+#      the python3-redis package available with cluster support.
+#     - run:
+#         name: run tests
+#         command: python3 setup.py test
