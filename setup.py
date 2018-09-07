@@ -7,7 +7,7 @@ setup(
     version='0.7.0',
 
     description='Redis Module Testing Utility',
-    url='http://github.com/RedisLabs/rmtest',
+    url='http://github.com/goodform/rmtest',
     packages=find_packages(),
     install_requires=['redis'],
     classifiers=[

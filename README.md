@@ -2,7 +2,7 @@
 
 A simple nano-framework for testing redis modules using python unit test, and a disposable ephemeral redis subprocess.
 
-[![CircleCI](https://circleci.com/gh/RedisLabs/rmtest.svg?style=svg)](https://circleci.com/gh/RedisLabs/rmtest)
+[![CircleCI](https://circleci.com/gh/goodform/rmtest.svg?style=svg)](https://circleci.com/gh/goodform/rmtest)
 
 ## Example:
 
