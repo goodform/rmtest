@@ -58,7 +58,10 @@ class ClusterTestCase(unittest.TestCase):
         self.assertEqual(3, len(ports))
 
         res = self.cl.broadcast('ping')
-        self.assertListEqual(['PONG', 'PONG', 'PONG'], res)
+        if (isinstance(res[0], bool)):
+            self.assertListEqual([True, True, True], res)
+        else:
+            self.assertListEqual(['PONG', 'PONG', 'PONG'], res)
     
     def tearDown(self):
         self.cl.stop()
